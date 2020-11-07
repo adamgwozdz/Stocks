@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\UserMoney;
 use App\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -55,8 +56,13 @@ class RegistrationController extends AbstractController
             $user->setUseEmail($data['useEmail']);
             $user->setUsePhone($data['usePhone']);
 
+            $userMoney = new UserMoney();
+            $userMoney->setUser($user);
+            $userMoney->setUsmAmount(5000);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
+            $em->persist($userMoney);
             $em->flush();
 
             return $this->redirect($this->generateUrl('app_login'));
