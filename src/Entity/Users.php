@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -14,9 +16,9 @@ class Users implements UserInterface
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(name="USE_ID", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      */
-    private $useId;
+    private $id;
 
     /**
      * @ORM\Column(name="USE_USERNAME", type="string", length=180, unique=true)
@@ -54,9 +56,31 @@ class Users implements UserInterface
      */
     private $usePhone;
 
-    public function getUseId(): ?int
+    /**
+     * @ORM\OneToOne(targetEntity=UserMoney::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $userMoney;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Wallet::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $userWallets;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Transactions::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $userTransactions;
+
+    public function __construct()
     {
-        return $this->useId;
+        $this->userWallets = new ArrayCollection();
+        $this->userTransactions = new ArrayCollection();
+    }
+    
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     /**
@@ -173,5 +197,82 @@ class Users implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getUserMoney(): ?UserMoney
+    {
+        return $this->userMoney;
+    }
+
+    public function setUserMoney(UserMoney $userMoney): self
+    {
+        $this->userMoney = $userMoney;
+
+        // set the owning side of the relation if necessary
+        if ($userMoney->getUser() !== $this) {
+            $userMoney->setUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Wallet[]
+     */
+    public function getUserWallets(): Collection
+    {
+        return $this->userWallets;
+    }
+
+    public function addUserWallet(Wallet $userWallet): self
+    {
+        if (!$this->userWallets->contains($userWallet)) {
+            $this->userWallets[] = $userWallet;
+            $userWallet->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserWallet(Wallet $userWallet): self
+    {
+        if ($this->userWallets->removeElement($userWallet)) {
+            // set the owning side to null (unless already changed)
+            if ($userWallet->getUser() === $this) {
+                $userWallet->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transactions[]
+     */
+    public function getUserTransactions(): Collection
+    {
+        return $this->userTransactions;
+    }
+
+    public function addUserTransaction(Transactions $userTransaction): self
+    {
+        if (!$this->userTransactions->contains($userTransaction)) {
+            $this->userTransactions[] = $userTransaction;
+            $userTransaction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserTransaction(Transactions $userTransaction): self
+    {
+        if ($this->userTransactions->removeElement($userTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($userTransaction->getUser() === $this) {
+                $userTransaction->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
