@@ -18,7 +18,7 @@ class MainController extends AbstractController {
             ]);
 
         } else {
-            return $this->redirectToRoute('app_login');
+            return $this->render('main/main.html.twig');
         }
     }
 }

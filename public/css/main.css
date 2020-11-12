@@ -1,0 +1,152 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    height: 100vh;  
+}
+
+#container {
+    width: 100%;
+    height: 100vh;
+    scroll-snap-type: y mandatory;
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+
+#main-nav {
+    border-bottom: 2px solid #253445;
+    background-color: #253445;
+    color: #ffffff;
+    justify-content: space-between !important;
+    position: -webkit-sticky;
+    position: sticky;  
+    top: 0;
+}
+
+#main-nav > a {
+    color: #ffffff;
+}
+
+#main-nav > * {
+    color: #ffffff;
+}
+
+section {
+    width: 100%;
+    height: 100vh;
+    padding: 70px 0 0 0;
+    scroll-behavior: smooth;
+}
+
+#container section {
+    scroll-snap-align: start;
+}
+
+.navbar {
+    z-index: 1;
+}
+
+.btn-primary {
+    background-color: #253445;
+    border-color: #253445;
+    width: 312px;
+    height: 56px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 25px;
+}
+
+
+
+/* =============== WELCOME =============== */
+
+.section-welcome {
+    background-image: url('img/bgmain.jpg');
+    z-index: -1;
+}
+
+.welcome-message {
+    background-color: #ffffff;
+}
+
+.welcome-header {
+    font-size: 48px;
+    font-weight: 700;
+}
+
+
+@media(max-width: 720px) {
+    .welcome-header {
+        font-size: 24px;
+    }
+    
+}
+
+
+
+/* =============== ABOUT =============== */
+
+.section-about {
+    background-color: #ffffff;
+}
+
+.about-header {
+    height: 45%;
+}
+
+.about-icons {
+    height: 55%;
+    background-color: #253445;
+}
+
+.about-icon {
+    font-size: 16px;
+    color: #ffffff;
+}
+
+@media(max-width: 575px) {
+    .about-header > .h2 {
+        font-size: 18px;
+    }
+
+    .about-header > p{
+        font-size: 14px;
+    }
+
+    .about-icon {
+        font-size: 14px;
+    }   
+}
+
+
+
+/* =============== USER =============== */
+
+.section-user {
+    background-color: #253445;
+}
+
+.user-message {
+    background-color: #253445;
+    color: #ffffff;
+}
+
+.user-actions {
+    background-color: #ffffff;
+}
+
+.user-action {
+    background-color: #253445;
+    color: #ffffff;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color .2s linear;
+}
+
+.user-action:hover {
+    background-color: #0275d8;
+    text-decoration: none;
+    color: #ffffff;
+}

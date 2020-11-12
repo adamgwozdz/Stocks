@@ -1,5 +1,56 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseForm.html.twig' %}
+
+{% block title %}Register{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+        <h1 class="h1 text-center mt-3"><a class="link" href = {{ path('index')}}>Giełda Warzyw</a></h1>
+        <p class="text-center mt-3">You need to create new account in order to use all Giełda Warzyw functions and features. Please use form below to create free user account.</p>
+
+        <div class="row justify-content-center col-md-8 mt-3">
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    {{ form_row(form.username) }}
+                </div>
+                <div class="col-md-8 offset-md-2">
+                    {{ form_row(form.password) }}
+                </div>
+
+                <div class="col-md-4 offset-md-2">
+                    {{ form_row(form.useFirstName) }}
+                </div>
+                <div class="col-md-4 ">
+                    {{ form_row(form.useLastName) }}
+                </div>
+                <div class="col-md-4 offset-md-2">
+                    {{ form_row(form.useEmail, { 'attr': {'placeholder' : 'eg. bolo@gmail.com'}}) }}
+                </div>
+                <div class="col-md-4">
+                    {{ form_row(form.usePhone, { 'attr': {'placeholder' : 'xxx-xxx-xxx'}}) }}
+                </div>
+            </div>
+
+             
+
+             <div class="form-row m-3">
+                <div class="form-check col-md-12 text-center">
+                    <input class="form-check-input" type="checkbox" id="tos" required>
+                    <label class="form-check-label" for="tos">
+                        I agree to <a href="#" class="link">terms of service</a>
+
+                        {# TODO: redirect to ToS #}
+                        {# {{ path('tos')}} #}
+                    </label>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary mr-4">Create account</button>
+                <button type="reset" class="btn btn-danger ml-4">Clear data</button> 
+            </div>  
+        {{ form_end(form, {'render_rest': false}) }}
+
+        <p class="text-muted text-center mt-5"><small> Creating account on <a class="link" href = {{ path('index')}}>Giełda Warzyw</a> is always free of charge. Giełda Warzyw employees will never ask you for your password.</small></p>
+    </div>  
 {% endblock %}

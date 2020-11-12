@@ -1,0 +1,27 @@
+body {
+    background-color: #253445;
+    color: #ffffff;
+    height: 100vh;
+}
+
+.link {
+    color: #0088ff;
+    transition: color .1s linear;
+}
+
+.link:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.login-panel {
+    background: #253445;
+    color: #ffffff;
+    border-radius: 20px;
+    width: 30vw;
+    height: 30vw;
+}
+
+.login-bg {
+    background-image: url('img/bgmain.jpg');
+}
