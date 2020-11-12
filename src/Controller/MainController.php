@@ -14,21 +14,14 @@ class MainController extends AbstractController {
     public function index(): Response {
         //Check if user is logged in. If not redirect to login page
         $securityContext = $this->container->get('security.authorization_checker');
-<<<<<<< HEAD
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->render('main/index.html.twig', [
                 'controller_name' => 'MainController',
             ]);
 
         } else {
-            return $this->render('main/main.html.twig');
+            return $this->render('main/index.html.twig');
         }
-=======
-        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED'))
-            return $this->redirect($this->generateUrl('dashboard'));
-        else
-            return $this->redirectToRoute('app_login');
->>>>>>> origin/Szymon
     }
 
     /**

@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container d-flex flex-column justify-content-center align-items-center">
-        <h1 class="h1 text-center mt-3"><a class="link" href = {{ path('index')}}>Giełda Warzyw</a></h1>
+        <h1 class="h1 text-center mt-3"><a class="link" href = "{{ path('check')}}">Giełda Warzyw</a></h1>
         <p class="text-center mt-3">You need to create new account in order to use all Giełda Warzyw functions and features. Please use form below to create free user account.</p>
 
         <div class="row justify-content-center col-md-8 mt-3">
@@ -51,6 +51,6 @@
             </div>  
         {{ form_end(form, {'render_rest': false}) }}
 
-        <p class="text-muted text-center mt-5"><small> Creating account on <a class="link" href = {{ path('index')}}>Giełda Warzyw</a> is always free of charge. Giełda Warzyw employees will never ask you for your password.</small></p>
+        <p class="text-muted text-center mt-5"><small> Creating account on <a class="link" href = "{{ path('check')}}"}>Giełda Warzyw</a> is always free of charge. Giełda Warzyw employees will never ask you for your password.</small></p>
     </div>  
 {% endblock %}
