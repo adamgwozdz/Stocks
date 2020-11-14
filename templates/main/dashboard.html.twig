@@ -1,7 +1,84 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Dashboard{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/dashboard.css">
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        <div id="container">
+		<nav>
+		   <div class="menu">
+			   <div class="menu-top">
+					<div class="menu-item">
+                        <a href="#" class="menu-item-link">
+						<svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-graph-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+						    <p class="text-center mt-1">Akcje</p>
+						</a>
+					</div>
+					<div class="menu-item mt-4">
+						<a href="#" class="menu-item-link">
+                        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-table" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/>
+                        </svg>
+							<p class="text-center mt-1">Indeks</p>
+						</a>
+					</div>
+				</div>
+				<div class="menu-bottom">
+					<div class="menu-item mt-3">
+						<a href="#" class="menu-item-link">
+                        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-wallet" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M0 3a2 2 0 0 1 2-2h13.5a.5.5 0 0 1 0 1H15v2a1 1 0 0 1 1 1v8.5a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 0 12.5V3zm1 1.732V12.5A1.5 1.5 0 0 0 2.5 14h12a.5.5 0 0 0 .5-.5V5H2a1.99 1.99 0 0 1-1-.268zM1 3a1 1 0 0 0 1 1h12V2H2a1 1 0 0 0-1 1z"/>
+                        </svg>
+							<p class="text-center mt-1">Portfel</p>
+						</a>
+					</div>
+					<div class="menu-item mt-3">
+						<a href="#" class="menu-item-link">
+                        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        </svg>
+							<p class="text-center mt-1">Profil</p>
+						</a>
+					</div>
+					<div class="menu-item mt-3">
+						<a href="#" class="menu-item-link">
+                        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-box-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                        </svg>
+							<p class="text-center mt-1">Wyloguj</p>
+						</a>
+					</div>
+			   </div>
+		   </div>
+		</nav>
+	   <div class="content">
+			<div class="content-header">
+				<h1 class="h2">{{ user.useFirstName }} {{ user.userMoney.usmAmount }}</h1>
+				<p>Nie tylko nagłówek ale też inne bajery</p>
+			</div>
+			<div class="content-content">
+				<div class="content-main">
+					<main>
+						<h2>Jakiś nagłówek dla głównego contentu</h2>
+						<p>
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu consectetur purus. Curabitur pellentesque tortor eget magna eleifend, et sollicitudin velit tristique. Vestibulum vulputate felis eget metus convallis, id finibus dolor efficitur. Etiam a maximus augue. Curabitur aliquam magna eu porttitor sodales. Fusce sodales et nunc et consectetur. Nulla vitae ante varius, condimentum felis eu, euismod felis. Fusce laoreet sem a velit elementum, ac varius leo tristique. Cras non elit ac metus dapibus interdum. Fusce eu sapien id nunc sodales mattis. In sit amet enim et nunc interdum pharetra in et lectus. Vestibulum sed ante lacinia, tempor leo pretium, tincidunt lectus. Quisque ut convallis lorem. Suspendisse potenti. Donec tortor est, fermentum in posuere condimentum, auctor non felis.
 
-{% block title %}Hello MainController!{% endblock %}
-
-{% block body %}
-<h1>{{ user.useFirstName }} {{ user.userMoney.usmAmount }}</h1>
-{% endblock %}
+							Nam porttitor urna erat, vitae pulvinar nunc tincidunt sed. Nulla ante elit, hendrerit vel augue vel, rutrum rutrum arcu. Mauris sagittis, diam sit amet tincidunt gravida, enim purus dapibus erat, quis bibendum ipsum ante sit amet sapien. Vivamus vitae mi ullamcorper, ullamcorper sem id, blandit felis. Praesent cursus aliquam diam, nec suscipit magna. Nulla ac lectus non sem sagittis eleifend sit amet a lorem. Curabitur metus tellus, dignissim id turpis at, sagittis tristique odio. Integer semper elit id est dignissim cursus. Integer nisi lacus, maximus eu pharetra semper, tempus eget velit. Vivamus vitae tellus a dui tempor vulputate. 	
+						</p>
+					</main>
+				</div>
+			</div>
+	   </div>
+	</div>
+        {% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
