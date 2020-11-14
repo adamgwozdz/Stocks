@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Transactions;
+use App\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,9 +34,18 @@ class MainController extends AbstractController {
     public function dashboard(UserInterface $user) : Response {
         dump($user);
 
+
         return $this->render('main/dashboard.html.twig', [
             'user' => $user,
         ]);
+    }
+
+    public function showTransactions($userId) {
+        $user = $this->getDoctrine()
+            ->getRepository(Users::class)
+            ->findTransactionsById($userId);
+
+        $transactions = $user->getUsers();
     }
 
 }
