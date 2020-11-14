@@ -64,6 +64,7 @@ section {
 
 .section-welcome {
     background-image: url('img/bgmain.jpg');
+    background-size: cover;
     z-index: -1;
 }
 
