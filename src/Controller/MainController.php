@@ -2,6 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Transactions;
+use App\Entity\Users;
+use App\Repository\CompaniesRepository;
+use App\Repository\UsersRepository;
+use Container3199tEd\getUserMoneyRepositoryService;
+use Container3199tEd\getUsersRepositoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,13 +33,35 @@ class MainController extends AbstractController {
     /**
      * @Route("/dashboard", name="dashboard")
      * @param UserInterface $user
+     * @param CompaniesRepository $company
      * @return Response
      */
-    public function dashboard(UserInterface $user) : Response {
-        dump($user);
+    public function dashboard(UserInterface $user, CompaniesRepository $company) : Response {
+        // User data
+        $userId = $user->getId();
 
-        return $this->render('main/actions.html.twig', [
+        $this->getDoctrine()
+            ->getRepository(Users::class)
+            ->findTransactionsById($userId);
+
+        $this->getDoctrine()
+            ->getRepository(Users::class)
+            ->findWalletItemsById($userId);
+
+        $userTransactions = $user->getUserTransactions();
+        $userWallet = $user->getUserWallets();
+
+        //Company data
+        $company->findCompanyHistoryById(1);
+
+
+        dump($company);
+        return $this->render('main/dashboard.html.twig', [
+
             'user' => $user,
+            'wallet' => $userWallet,
+            'transactions' => $userTransactions,
+            'company' => $company,
         ]);
     }
 
@@ -91,5 +119,4 @@ class MainController extends AbstractController {
     public function tos() {
         return $this->render('main/tos.html.twig');
     }
-
 }
