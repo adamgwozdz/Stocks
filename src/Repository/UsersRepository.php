@@ -44,9 +44,26 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
     {
         $query = $this->getEntityManager()
             ->createQuery(
-                'SELECT * 
-                    FROM users u
-                    LEFT JOIN transactions t ON t.user_id = u.id
+                'SELECT u, t 
+                    FROM App:Users u
+                    LEFT JOIN u.userTransactions t
+                    WHERE u.id = :id'
+            )->setParameter('id', $userId);
+
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+    }
+
+    public function findWalletItemsById($userId)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                'SELECT u, w
+                    FROM App:Users u
+                    LEFT JOIN u.userWallets w
                     WHERE u.id = :id'
             )->setParameter('id', $userId);
 
