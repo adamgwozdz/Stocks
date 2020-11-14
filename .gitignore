@@ -16,5 +16,6 @@
 ###< symfony/phpunit-bridge ###
 
 
+### Config files ###
 .vs
 .env

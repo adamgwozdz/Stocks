@@ -32,9 +32,64 @@ class MainController extends AbstractController {
     public function dashboard(UserInterface $user) : Response {
         dump($user);
 
-        return $this->render('main/dashboard.html.twig', [
+        return $this->render('main/actions.html.twig', [
             'user' => $user,
         ]);
+    }
+
+    /**
+     * @Route("/actions", name="actions")
+     * @param UserInterface $user
+     */
+    public function actions(UserInterface $user) : Response {
+        dump($user);
+
+        return $this->render('main/actions.html.twig', [
+            'user' => $user,
+        ]);
+    } 
+
+    /**
+     * @Route("/stock_index", name="stock_index")
+     * @param UserInterface $user
+     */
+    public function indeks(UserInterface $user)  {
+        dump($user);
+
+        return $this->render('main/stock_index.html.twig', [
+            'user' => $user,
+        ]);
+    } 
+
+    /**
+     * @Route("/wallet", name="wallet")
+     * @param UserInterface $user
+     */
+    public function wallet(UserInterface $user)  {
+        dump($user);
+
+        return $this->render('main/wallet.html.twig', [
+            'user' => $user,
+        ]);
+    } 
+
+    /**
+     * @Route("/profile", name="profile")
+     * @param UserInterface $user
+     */
+    public function profile(UserInterface $user)  {
+        dump($user);
+
+        return $this->render('main/profile.html.twig', [
+            'user' => $user,
+        ]);
+    } 
+
+    /**
+     * @Route("/tos", name="tos")
+     */
+    public function tos() {
+        return $this->render('main/tos.html.twig');
     }
 
 }
