@@ -35,6 +35,11 @@ class Companies
     private $cpnVolume;
 
     /**
+     * @ORM\Column(name="CPN_VALUE", type="float")
+     */
+    private $cpnValue;
+
+    /**
      * @ORM\Column(name="CPN_MARKET_AREA", type="string", length=255, nullable=true)
      */
     private $cpnMarketArea;
@@ -93,6 +98,15 @@ class Companies
         $this->cpnVolume = $cpnVolume;
 
         return $this;
+    }
+
+    public function getCpnValue(): ?float
+    {
+        return $this->cpnValue;
+    }
+
+    public function setCpnValue($cpnValue): void {
+        $this->cpnValue = $cpnValue;
     }
 
     public function getCpnMarketArea(): ?string
