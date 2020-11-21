@@ -61,8 +61,10 @@
 		</nav>
 	   <div class="content">
 			<div class="content-header">
-				<h1 class="h2">{{ user.useFirstName }} {{ user.userMoney.usmAmount }} </h1>
-				<p>Nie tylko nagłówek ale też inne bajery</p>
+				{% block header %}
+					<h1 class="h2">{{ user.useFirstName }} {{ user.userMoney.usmAmount }} </h1>
+					<p>Nie tylko nagłówek ale też inne bajery</p>
+				{% endblock %}
 			</div>
 			<div class="content-content">
 				<div class="content-main">

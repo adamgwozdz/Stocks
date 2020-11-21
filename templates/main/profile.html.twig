@@ -2,6 +2,81 @@
 
 {% block title %}Profile{% endblock %}
 
+{% block header %}
+    <h1>Account settings</h1>
+{% endblock %}
+
 {% block main %}
-    <h4>To jest profil</h4>
+    <div class="row mt-3">
+        <div class="col-md-6 d-flex flex-column">
+            <h2 class="text-center h3">Account</h2>
+            <p class="text-center">
+                Edit you account details here
+            </p>
+
+            {{ form_start(formAccount) }}  
+                <div class="row">
+                    <div class="col-md-4 offset-md-2">
+                        {{ form_row(formAccount.username, { 'attr': {'value' : user.username}}) }}
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-md-4 offset-md-2">
+                            {{ form_row(formAccount.useFirstName, { 'attr': {'value' : user.useFirstName}}) }}
+                        </div>
+                        <div class="col-md-4 ">
+                            {{ form_row(formAccount.useLastName, { 'attr': {'value' : user.useLastName}}) }}
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-md-4 offset-md-2">
+                            {{ form_row(formAccount.useEmail, { 'attr': {'value' : user.useEmail}}) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(formAccount.usePhone, { 'attr': {'value' : user.usePhone}}) }}
+                        </div>
+                    </div>
+                    
+
+                    <div class="my-3 w-100 d-flex justify-content-center">
+                        <button type="submit"  class="btn btn-primary mx-3 d-flex align-items-center col-3 justify-content-center">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                            Account
+                        </button>
+                    </div>
+                </div>   
+            {{ form_end(formAccount, {'render_rest': false}) }}
+
+            
+        </div>
+    
+
+        <div class="col-md-6 d-flex flex-column">
+            <h2 class="text-center h3">Password</h2>
+            <p class="text-center">
+                Change your password here
+            </p>
+
+            {{ form_start(formPassword) }}  
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        {{ form_row(formPassword.password) }}
+                    </div>
+
+                    <div class="my-3 w-100 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary mx-3 d-flex align-items-center justify-content-center col-3">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/>
+                                <path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/>
+                            </svg>
+                            Password
+                        </button>
+                    </div>
+                </div>   
+            {{ form_end(formPassword, {'render_rest': false}) }}
+
+            
+        </div>
+    </div>
 {% endblock %}
