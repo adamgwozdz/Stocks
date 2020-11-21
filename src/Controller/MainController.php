@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Transactions;
 use App\Entity\Users;
+use App\Entity\AccountEdit;
 use App\Repository\CompaniesRepository;
 use App\Repository\UsersRepository;
 use Container3199tEd\getUserMoneyRepositoryService;
@@ -12,6 +13,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 class MainController extends AbstractController {
     /**
@@ -105,13 +115,94 @@ class MainController extends AbstractController {
      * @Route("/profile", name="profile")
      * @param UserInterface $user
      */
-    public function profile(UserInterface $user)  {
+    public function profile(Request $request, UserInterface $user)  {
         dump($user);
+
+        $formAccount = $this->createFormBuilder()
+            ->add('username', HiddenType::class, [
+                'required' => true
+            ])
+            ->add('useFirstName', TextType::class, [
+                'label' => 'User First Name',
+                'required' => true
+            ])
+            ->add('useLastName', TextType::class, [
+                'label' => 'User Last Name',
+                'required' => true
+            ])
+            ->add('useEmail', TextType::class, [
+                'label' => 'User e-mail address',
+                'required' => true
+            ])
+            ->add('usePhone', NumberType::class, [
+                'label' => 'User Phone Number',
+                'required' => true
+            ])
+            ->getForm();
+
+        $formPassword = $this->createFormBuilder()
+        ->add('password', RepeatedType::class, [
+            'type' => PasswordType::class,
+            'required' => true,
+            'first_options' => ['label' => 'Password'],
+            'second_options' => ['label' => 'Confirm Password'],
+        ])->getForm();
+
+        $formAccount->handleRequest($request);
+        if ($formAccount->isSubmitted()) {
+            $data = $formAccount->getData();
+            $user = new AccountEdit();
+
+            $user->setUsername($data['username']);
+            $user->setUseFirstName($data['useFirstName']);
+            $user->setUseLastName($data['useLastName']);
+            $user->setUseEmail($data['useEmail']);
+            $user->setUsePhone($data['usePhone']);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('change_account_settings'));
+        }
+
+        $formPassword->handleRequest($request);
+        if ($formPassword->isSubmitted()) {
+            $data = $formPassword->getData();
+            $user = new Users();
+
+            $user->setUsername($data['username']);
+            $user->setPassword(
+                $passwordEncoder->encodePassword($user, $data['password'])
+            );
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('change_password'));
+        }
 
         return $this->render('main/profile.html.twig', [
             'user' => $user,
+            'formAccount' => $formAccount->CreateView(),
+            'formPassword' => $formPassword->CreateView()
         ]);
     } 
+
+    /**
+     * @Route("/change_account_settings", name="change_account_settings")
+     */
+    public function changeAccountSettings() {
+        return "dupA";
+    }
+
+    /**
+     * @Route("/changePassword", name="change_password")
+     */
+    public function changePassword() {
+        return "duPa";
+    }
 
     /**
      * @Route("/tos", name="tos")
