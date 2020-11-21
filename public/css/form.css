@@ -24,4 +24,5 @@ body {
 
 .login-bg {
     background-image: url('img/bgmain.jpg');
+    background-size: cover;
 }
