@@ -40,6 +40,40 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
         $this->_em->flush();
     }
 
+    public function findTransactionsById($userId)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                'SELECT u, t 
+                    FROM App:Users u
+                    LEFT JOIN u.userTransactions t
+                    WHERE u.id = :id'
+            )->setParameter('id', $userId);
+
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+    }
+
+    public function findWalletItemsById($userId)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                'SELECT u, w
+                    FROM App:Users u
+                    LEFT JOIN u.userWallets w
+                    WHERE u.id = :id'
+            )->setParameter('id', $userId);
+
+        try {
+            return $query->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return null;
+        }
+    }
+
     // /**
     //  * @return Users[] Returns an array of Users objects
     //  */
