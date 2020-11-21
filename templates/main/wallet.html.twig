@@ -4,8 +4,24 @@
 
 {% block main %}
     <h4>To jest portfel</h4>
-
-
-
-    
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Nazwa</td>
+            <td>Ilość</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for wal in wallet %}
+            <tr>
+                <td>
+                    <a href="{{ path('actions', {name: wal.walStock}) }}">
+                        {{ wal.walStock }}
+                    </a>
+                </td>
+                <td>{{ wal.walAmount }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

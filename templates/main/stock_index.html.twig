@@ -4,4 +4,30 @@
 
 {% block main %}
     <h4>To jest indeks</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Nazwa</td>
+                <td>Kurs</td>
+                <td>Wolumen</td>
+                <td>Kategoria</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cpn in company %}
+            <tr>
+                <td>
+                    <a href="{{ path('actions', {name: cpn.cpnName}) }}">
+                        {{ cpn.cpnName }}
+                    </a>
+                </td>
+                <td>{{ cpn.cpnValue }}</td>
+                <td>{{ cpn.cpnVolume }}</td>
+                <td>{{ cpn.cpnMarketArea }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
 {% endblock %}
