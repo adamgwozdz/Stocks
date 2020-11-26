@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Transactions;
 use App\Entity\Users;
 use App\Entity\AccountEdit;
+use App\Entity\PasswordEdit;
 use App\Repository\CompaniesRepository;
 use App\Repository\UsersRepository;
 use Container3199tEd\getUserMoneyRepositoryService;
@@ -21,6 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 
 class MainController extends AbstractController {
@@ -66,7 +68,7 @@ class MainController extends AbstractController {
 
 
         dump($company);
-        return $this->render('main/dashboard.html.twig', [
+        return $this->render('main/stock_index.html.twig', [
 
             'user' => $user,
             'wallet' => $userWallet,
@@ -112,10 +114,10 @@ class MainController extends AbstractController {
     } 
 
     /**
-     * @Route("/profile", name="profile")
+     * @Route("/profile/{id}", name="profile")
      * @param UserInterface $user
      */
-    public function profile(Request $request, UserInterface $user)  {
+    public function profile(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id)  {
         dump($user);
 
         $formAccount = $this->createFormBuilder()
@@ -140,6 +142,20 @@ class MainController extends AbstractController {
             ])
             ->getForm();
 
+        $formAccount->handleRequest($request);
+        if ($formAccount->isSubmitted()) {
+            $data = $formAccount->getData();
+
+            return $this->forward('App\Controller\MainController::changeAccountSettings', [
+                'id' => $id, 
+                'username' => $data['username'],
+                'useFirstName' => $data['useFirstName'],
+                'useLastName' => $data['useLastName'],
+                'useEmail' => $data['useEmail'],
+                //'usePhone' => $data['usePhone']
+            ]);
+        }
+
         $formPassword = $this->createFormBuilder()
         ->add('password', RepeatedType::class, [
             'type' => PasswordType::class,
@@ -148,39 +164,14 @@ class MainController extends AbstractController {
             'second_options' => ['label' => 'Confirm Password'],
         ])->getForm();
 
-        $formAccount->handleRequest($request);
-        if ($formAccount->isSubmitted()) {
-            $data = $formAccount->getData();
-            $user = new AccountEdit();
-
-            $user->setUsername($data['username']);
-            $user->setUseFirstName($data['useFirstName']);
-            $user->setUseLastName($data['useLastName']);
-            $user->setUseEmail($data['useEmail']);
-            $user->setUsePhone($data['usePhone']);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('change_account_settings'));
-        }
-
         $formPassword->handleRequest($request);
         if ($formPassword->isSubmitted()) {
             $data = $formPassword->getData();
-            $user = new Users();
 
-            $user->setUsername($data['username']);
-            $user->setPassword(
-                $passwordEncoder->encodePassword($user, $data['password'])
-            );
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('change_password'));
+            return $this->forward('App\Controller\MainController::changePassword', [
+                'id' => $id, 
+                'password' => encodePassword($data['password'])
+            ]);
         }
 
         return $this->render('main/profile.html.twig', [
@@ -191,17 +182,41 @@ class MainController extends AbstractController {
     } 
 
     /**
-     * @Route("/change_account_settings", name="change_account_settings")
+     * @Route("/edit_account/{id}/{username}/{useFirstName}/{useLastName}/{useEmail}", name="edit_account")
+     * Method ({"POST"})
      */
-    public function changeAccountSettings() {
-        return "dupA";
+    public function changeAccountSettings($id, $username, $useFirstName, $useLastName, $useEmail) {
+            $entityManager = $this->getDoctrine()->getManager();
+        
+            $user = $entityManager->getRepository(AccountEdit::class)->find($id);
+
+            $user->setUsername($username);
+            $user->setUseFirstName($useFirstName);
+            $user->setUseLastName($useLastName);
+            $user->setUseEmail($useEmail);
+           // $user->setUsePhone($usePhone);
+
+            $entityManager->flush();
+
+
+        return $this->redirectToRoute('profile', array('id' => $id));
     }
 
     /**
-     * @Route("/changePassword", name="change_password")
+     * @Route("/changePassword/{id}/{password}", name="change_password")
+     * * Method ({"POST"})
      */
-    public function changePassword() {
-        return "duPa";
+    public function changePassword($id, $password) {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $user = $entityManager->getRepository(PasswordEdit::class)->find($id);
+
+        $user->setPassword($password);
+
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('stock_index');
     }
 
     /**
