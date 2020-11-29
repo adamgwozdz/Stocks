@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Companies;
 use App\Entity\Transactions;
 use App\Entity\Users;
 use App\Entity\AccountEdit;
@@ -11,6 +12,8 @@ use App\Repository\UsersRepository;
 use Container3199tEd\getUserMoneyRepositoryService;
 use Container3199tEd\getUsersRepositoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,7 +23,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
@@ -42,81 +44,86 @@ class MainController extends AbstractController {
         }
     }
 
+    //User data
+    //$userId = $user->getId();
+    //
+    //$this->getDoctrine()
+    //->getRepository(Users::class)
+    //->findTransactionsById($userId);
+    //
+    //$this->getDoctrine()
+    //->getRepository(Users::class)
+    //->findWalletItemsById($userId);
+    //
+    //$userTransactions = $user->getUserTransactions();
+    //$userWallet = $user->getUserWallets();
+    //Company data
+    //$company = $company->findCompanyHistoryById(1);
+    //$history = $company->getCompanyHistory();
+
     /**
-     * @Route("/dashboard", name="dashboard")
+     * @Route("/stock_index", name="stock_index")
      * @param UserInterface $user
      * @param CompaniesRepository $company
      * @return Response
      */
-    public function dashboard(UserInterface $user, CompaniesRepository $company) : Response {
-        // User data
-        $userId = $user->getId();
+    public function stockIndex(UserInterface $user, CompaniesRepository $company) : Response {
 
-        $this->getDoctrine()
-            ->getRepository(Users::class)
-            ->findTransactionsById($userId);
-
-        $this->getDoctrine()
-            ->getRepository(Users::class)
-            ->findWalletItemsById($userId);
-
-        $userTransactions = $user->getUserTransactions();
-        $userWallet = $user->getUserWallets();
-
-        //Company data
-        $company->findCompanyHistoryById(1);
-
+        $em = $this->getDoctrine()->getManager();
+        $company= $em->getRepository(Companies::class)->findAll();
 
         dump($company);
         return $this->render('main/stock_index.html.twig', [
-
             'user' => $user,
-            'wallet' => $userWallet,
-            'transactions' => $userTransactions,
             'company' => $company,
         ]);
     }
 
     /**
-     * @Route("/actions", name="actions")
+     * @Route("/actions/{name?}", name="actions")
      * @param UserInterface $user
+     * @param CompaniesRepository $companiesRepository
+     * @param $name
+     * @return Response
      */
-    public function actions(UserInterface $user) : Response {
-        dump($user);
+    public function actions(UserInterface $user, CompaniesRepository $companiesRepository, $name) : Response {
+        $company = $companiesRepository->findOneBy(array('cpnName' => $name));
 
         return $this->render('main/actions.html.twig', [
             'user' => $user,
+            'company' => $company,
         ]);
-    } 
-
-    /**
-     * @Route("/stock_index", name="stock_index")
-     * @param UserInterface $user
-     */
-    public function indeks(UserInterface $user)  {
-        dump($user);
-
-        return $this->render('main/stock_index.html.twig', [
-            'user' => $user,
-        ]);
-    } 
+    }
 
     /**
      * @Route("/wallet", name="wallet")
      * @param UserInterface $user
+     * @param CompaniesRepository $company
+     * @return Response
      */
-    public function wallet(UserInterface $user)  {
+    public function wallet(UserInterface $user, CompaniesRepository $company)  {
         dump($user);
+
+        $userWallet = $user->getUserWallets();
+
+        $em = $this->getDoctrine()->getManager();
+        $company= $em->getRepository(Companies::class)->findAll();
 
         return $this->render('main/wallet.html.twig', [
             'user' => $user,
+            'wallet' => $userWallet,
+            'company' => $company,
         ]);
-    } 
+    }
 
     /**
      * @Route("/profile/{id}", name="profile")
+     * @param Request $request
      * @param UserInterface $user
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return RedirectResponse|Response
      */
+
     public function profile(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id)  {
         dump($user);
 
