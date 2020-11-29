@@ -18,7 +18,7 @@ class History
     private $id;
 
     /**
-     * @ORM\Column(name="HIS_VALUE", type="decimal", precision=10, scale=2)
+     * @ORM\Column(name="HIS_VALUE", type="float", precision=10, scale=2)
      */
     private $hisValue;
 

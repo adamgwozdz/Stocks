@@ -8,6 +8,7 @@
 
 
 {% block main %}
+<<<<<<< HEAD
     <div class="row mt-3 d-flex flex-column align-items-center justify-content-center">
         <p class="text-center h3 mb-4">
             Wallet details for user {{ user.useFirstName }} {{ user.useLastName }} 
@@ -41,4 +42,27 @@
 
 
     
+=======
+    <h4>To jest portfel</h4>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Nazwa</td>
+            <td>Ilość</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for wal in wallet %}
+            <tr>
+                <td>
+                    <a href="{{ path('actions', {name: wal.walStock}) }}">
+                        {{ wal.walStock }}
+                    </a>
+                </td>
+                <td>{{ wal.walAmount }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+>>>>>>> 5b1d46b26ed3c101187e4c6ef84aa0fb3f93682e
 {% endblock %}
