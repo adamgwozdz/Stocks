@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Companies;
+use App\Entity\History;
 use App\Entity\Transactions;
 use App\Entity\Users;
 use App\Entity\AccountEdit;
@@ -72,7 +73,6 @@ class MainController extends AbstractController {
         $em = $this->getDoctrine()->getManager();
         $company= $em->getRepository(Companies::class)->findAll();
 
-        dump($company);
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
             'company' => $company,
@@ -88,11 +88,44 @@ class MainController extends AbstractController {
      */
     public function actions(UserInterface $user, CompaniesRepository $companiesRepository, $name) : Response {
         $company = $companiesRepository->findOneBy(array('cpnName' => $name));
+        $companyId = $company->getId();
+        dump($companyId);
+
+        $this->prepareRandomValues($companyId);
 
         return $this->render('main/actions.html.twig', [
             'user' => $user,
             'company' => $company,
         ]);
+    }
+
+    public function prepareRandomValues($companyId) {
+        $em = $this->getDoctrine()->getManager();
+
+        $repository = $em->getRepository(History::class);
+        $lastValue = $repository->findBy(array('company' => $companyId),array('id'=>'DESC'),1,0);
+        $lastValue = $lastValue[0]->getHisValue();
+
+        $stocksVolume = $repository->findBy(array('company' => $companyId),array('id'=>'ASC'),1,0);
+        $stocksVolume = $stocksVolume[0]->getHisVolume();
+
+        $this -> randomValue($lastValue);
+        $this -> randomVolume($stocksVolume);
+        $this -> randomAction();
+    }
+
+    public function randomValue($lastValue) {
+        $maxChange = $lastValue / 1000;
+        $randomValue = rand(0, $maxChange * 100) / 100;
+    }
+
+    public function randomVolume($stocksVolume) {
+        $maxStocks = $stocksVolume / 100;
+        $randomVolume = (int)(rand(1 * 100, $maxStocks * 100) / 100);
+    }
+
+    public function randomAction() {
+        $actionFlag = rand(0, 1);
     }
 
     /**
