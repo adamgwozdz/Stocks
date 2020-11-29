@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Transactions;
 use App\Entity\Users;
+use App\Entity\Wallet;
+use App\Entity\Companies;
 use App\Entity\AccountEdit;
 use App\Entity\PasswordEdit;
 use App\Repository\CompaniesRepository;
@@ -102,16 +104,23 @@ class MainController extends AbstractController {
     } 
 
     /**
-     * @Route("/wallet", name="wallet")
+     * @Route("/wallet/{id}", name="wallet")
      * @param UserInterface $user
      */
-    public function wallet(UserInterface $user)  {
+    public function wallet(UserInterface $user, CompaniesRepository $company)  {
         dump($user);
+
+        $userWallet = $user->getUserWallets();
+
+        $em = $this->getDoctrine()->getManager();
+        $company= $em->getRepository(Companies::class)->findAll();
 
         return $this->render('main/wallet.html.twig', [
             'user' => $user,
+            'wallet' => $userWallet,
+            'company' => $company,
         ]);
-    } 
+    }
 
     /**
      * @Route("/profile/{id}", name="profile")
@@ -152,32 +161,15 @@ class MainController extends AbstractController {
                 'useFirstName' => $data['useFirstName'],
                 'useLastName' => $data['useLastName'],
                 'useEmail' => $data['useEmail'],
-                //'usePhone' => $data['usePhone']
+                'usePhone' => $data['usePhone']
             ]);
         }
 
-        $formPassword = $this->createFormBuilder()
-        ->add('password', RepeatedType::class, [
-            'type' => PasswordType::class,
-            'required' => true,
-            'first_options' => ['label' => 'Password'],
-            'second_options' => ['label' => 'Confirm Password'],
-        ])->getForm();
-
-        $formPassword->handleRequest($request);
-        if ($formPassword->isSubmitted()) {
-            $data = $formPassword->getData();
-
-            return $this->forward('App\Controller\MainController::changePassword', [
-                'id' => $id, 
-                'password' => encodePassword($data['password'])
-            ]);
-        }
+        
 
         return $this->render('main/profile.html.twig', [
             'user' => $user,
-            'formAccount' => $formAccount->CreateView(),
-            'formPassword' => $formPassword->CreateView()
+            'formAccount' => $formAccount->CreateView()
         ]);
     } 
 
@@ -185,7 +177,7 @@ class MainController extends AbstractController {
      * @Route("/edit_account/{id}/{username}/{useFirstName}/{useLastName}/{useEmail}", name="edit_account")
      * Method ({"POST"})
      */
-    public function changeAccountSettings($id, $username, $useFirstName, $useLastName, $useEmail) {
+    public function changeAccountSettings($id, $username, $useFirstName, $useLastName, $useEmail, $usePhone) {
             $entityManager = $this->getDoctrine()->getManager();
         
             $user = $entityManager->getRepository(AccountEdit::class)->find($id);
@@ -194,7 +186,7 @@ class MainController extends AbstractController {
             $user->setUseFirstName($useFirstName);
             $user->setUseLastName($useLastName);
             $user->setUseEmail($useEmail);
-           // $user->setUsePhone($usePhone);
+            $user->setUsePhone($usePhone);
 
             $entityManager->flush();
 
@@ -203,10 +195,44 @@ class MainController extends AbstractController {
     }
 
     /**
-     * @Route("/changePassword/{id}/{password}", name="change_password")
-     * * Method ({"POST"})
+     * @Route("/profilePassword/{id}", name="profile_password")
+     * Method ({"GET"})
      */
-    public function changePassword($id, $password) {
+    public function profilePassword(UserInterface $user, $id)
+    {
+        $formPassword = $this->createFormBuilder()
+            ->add('username', HiddenType::class, [
+                'required' => true
+            ])
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'required' => true,
+                'first_options' => ['label' => 'Password'],
+                'second_options' => ['label' => 'Confirm Password'],
+        ])->getForm();
+
+        return $this->render('main/password.html.twig', [
+            'user' => $user,
+            'formPassword' => $formPassword->CreateView()
+        ]);
+    }
+
+
+    /**
+     * @Route("/changePassword/{id}", name="change_password")
+     * Method ({"POST"})
+     */
+    public function changePassword(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id) {
+        $formPassword->handleRequest($request);
+        if ($formPassword->isSubmitted()) {
+            $data = $formPassword->getData();
+
+            return $this->forward('App\Controller\MainController::changePassword', [
+                'id' => $id, 
+                'password' => $passwordEncoder->encodePassword($user, $data['password'])
+            ]);
+        }
+
         $entityManager = $this->getDoctrine()->getManager();
 
         $user = $entityManager->getRepository(PasswordEdit::class)->find($id);
@@ -215,8 +241,7 @@ class MainController extends AbstractController {
 
         $entityManager->flush();
 
-
-        return $this->redirectToRoute('stock_index');
+        return $this->redirectToRoute('profile', array('id' => $id));
     }
 
     /**

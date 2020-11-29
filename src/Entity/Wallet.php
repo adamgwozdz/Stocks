@@ -18,6 +18,11 @@ class Wallet
     private $id;
 
     /**
+     * @ORM\Column(name="user_id", type="integer", nullable=true)
+     */
+    private $user_id;
+
+    /**
      * @ORM\Column(name="WAL_STOCK", type="string", length=255, nullable=true)
      */
     private $walStock;
@@ -36,6 +41,11 @@ class Wallet
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
     }
 
     public function getWalStock(): ?string
@@ -70,6 +80,12 @@ class Wallet
     public function setUser(?Users $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+    public function setUserId(?int $id): self
+    {
+        $this->user_id = $id;
 
         return $this;
     }
