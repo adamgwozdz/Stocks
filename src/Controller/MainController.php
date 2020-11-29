@@ -6,7 +6,6 @@ use App\Entity\Companies;
 use App\Entity\Transactions;
 use App\Entity\Users;
 use App\Entity\Wallet;
-use App\Entity\Companies;
 use App\Entity\AccountEdit;
 use App\Entity\PasswordEdit;
 use App\Repository\CompaniesRepository;
@@ -98,27 +97,12 @@ class MainController extends AbstractController {
     }
 
     /**
-     * @Route("/wallet", name="wallet")
-     * @param UserInterface $user
-     * @param CompaniesRepository $company
-     * @return Response
-     */
-    public function wallet(UserInterface $user, CompaniesRepository $company)  {
-        dump($user);
-
-        $userWallet = $user->getUserWallets();
-
-<<<<<<< HEAD
-    /**
      * @Route("/wallet/{id}", name="wallet")
      * @param UserInterface $user
      */
+
     public function wallet(UserInterface $user, CompaniesRepository $company)  {
         dump($user);
-=======
-        $em = $this->getDoctrine()->getManager();
-        $company= $em->getRepository(Companies::class)->findAll();
->>>>>>> 5b1d46b26ed3c101187e4c6ef84aa0fb3f93682e
 
         $userWallet = $user->getUserWallets();
 
