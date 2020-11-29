@@ -5,7 +5,7 @@
         <title>{% block title %}Dashboard{% endblock %}</title>
         {% block stylesheets %}
 			<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-			<link href="{{ asset('css/dashboard.css') }}" type="text/css" rel="stylesheet" />
+			<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}" type="text/css">
 		{% endblock %}
     </head>
     <body>
@@ -13,15 +13,7 @@
         <div id="container">
 		<nav>
 		   <div class="menu">
-			   <div class="menu-top">
-					<div class="menu-item">
-                        <a href="{{ path('actions')}}" class="menu-item-link">
-						<svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-graph-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5z"/>
-                        </svg>
-						    <p class="text-center mt-1">Akcje</p>
-						</a>
-					</div>
+			   <div class="d-flex flex-column align-items-center justify-content-center h-100">
 					<div class="menu-item mt-4">
 						<a href="{{ path('stock_index')}}" class="menu-item-link">
                         <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-table" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -30,9 +22,8 @@
 							<p class="text-center mt-1">Indeks</p>
 						</a>
 					</div>
-				</div>
-				<div class="menu-bottom">
-					<div class="menu-item mt-3">
+				
+					<div class="menu-item mt-4">
 						<a href="{{ path('wallet')}}" class="menu-item-link">
                         <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-wallet" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M0 3a2 2 0 0 1 2-2h13.5a.5.5 0 0 1 0 1H15v2a1 1 0 0 1 1 1v8.5a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 0 12.5V3zm1 1.732V12.5A1.5 1.5 0 0 0 2.5 14h12a.5.5 0 0 0 .5-.5V5H2a1.99 1.99 0 0 1-1-.268zM1 3a1 1 0 0 0 1 1h12V2H2a1 1 0 0 0-1 1z"/>
@@ -40,15 +31,15 @@
 							<p class="text-center mt-1">Portfel</p>
 						</a>
 					</div>
-					<div class="menu-item mt-3">
-						<a href="{{ path('profile')}}" class="menu-item-link">
+					<div class="menu-item mt-4">
+						<a href="/profile/{{user.id}}" class="menu-item-link">
                         <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                         </svg>
 							<p class="text-center mt-1">Profil</p>
 						</a>
 					</div>
-					<div class="menu-item mt-3">
+					<div class="menu-item mt-4">
 						<a href="{{ path('app_logout') }}" class="menu-item-link">
                         <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-box-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
@@ -63,7 +54,7 @@
 	   <div class="content">
 			<div class="content-header">
 				{% block header %}
-					<h1 class="h2">{{ user.useFirstName }} {{ user.userMoney.usmAmount }} </h1>
+					<h1 class="h2">{{ user.id }} {{ user.userMoney.usmAmount }} </h1>
 					<p>Nie tylko nagłówek ale też inne bajery</p>
 				{% endblock %}
 			</div>
