@@ -111,5 +111,10 @@ main {
     
 }
 
+.input-amount {
+	width: 60px;
+}
 
-
+.btn-amount {
+	height: 34px;
+}

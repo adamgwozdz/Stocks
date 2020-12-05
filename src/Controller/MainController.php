@@ -24,9 +24,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
+use Symfony\Component\Cache\Adapter\PdoAdapter;
 
 class MainController extends AbstractController {
     /**
@@ -74,6 +75,43 @@ class MainController extends AbstractController {
         $company= $em->getRepository(Companies::class)->findAll();
 
         dump($company);
+        return $this->render('main/stock_index.html.twig', [
+            'user' => $user,
+            'company' => $company,
+        ]);
+    }
+
+    /**
+     * @Route("/modifyStocksAmount", name="modifyStocksAmount")
+     * Method ({"POST"})
+     * @param Request $request
+     * @param UserInterface $user
+     * @param CompaniesRepository $company
+     * @return Response
+     */
+    public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company) : Response {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $comp = $request->get('comp');
+        $action = $request->get('action');
+        $amount = $request->get('amount');
+        $id = $request->get('user_id');
+
+        if ($action == 'sell') {
+            $amount = $amount * -1;
+        }
+
+        $procedure = "CALL changeAmount(:user_id, :company, :amount)";
+        $params['user_id'] = $id;
+        $params['company'] = $comp;
+        $params['amount'] = $amount;
+
+        $stmt = $em->getConnection()->prepare($procedure);
+        $stmt->execute($params);
+        
+        $company= $em->getRepository(Companies::class)->findAll();
+
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
             'company' => $company,
