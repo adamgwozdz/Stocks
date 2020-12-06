@@ -151,3 +151,40 @@ section {
     text-decoration: none;
     color: #ffffff;
 }
+
+
+
+/* =============== CREDIT CARDS =============== */
+
+.visa, .mastercard, .amex, .discover {
+    background-size: 64px 42px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: .5;
+}
+
+.card-selected {
+    opacity: 1;
+}
+
+.visa {
+    background-image: url('img/visa.jpg');
+}
+
+.mastercard {
+    background-image: url('img/mastercard.jpg');
+}
+
+.amex {
+    background-image: url('img/amex.png');
+}
+
+.discover {
+    background-image: url('img/discover.png');
+}
+
+.credit-card-icon {
+    width: 64px;
+    height: 42px;
+}

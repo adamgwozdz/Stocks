@@ -56,8 +56,6 @@
 	   <div class="content">
 			<div class="content-header">
 				{% block header %}
-					<h1 class="h2">{{ user.id }} {{ user.userMoney.usmAmount }} </h1>
-					<p>Nie tylko nagłówek ale też inne bajery</p>
 				{% endblock %}
 			</div>
 			<div class="content-content">
@@ -72,6 +70,8 @@
 	   </div>
 	</div>
         {% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+		
+		{% endblock %}
     </body>
 </html>

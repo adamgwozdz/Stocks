@@ -155,6 +155,27 @@ class MainController extends AbstractController {
     }
 
     /**
+     * @Route("/paymentMethod/{id}", name="payment_method")
+     * @param UserInterface $user
+     */
+
+    public function paymentMethod(UserInterface $user, CompaniesRepository $company)  {
+        dump($user);
+        
+        $userWallet = $user->getUserWallets();
+
+        $em = $this->getDoctrine()->getManager();
+        $company= $em->getRepository(Companies::class)->findAll();
+        
+
+        return $this->render('main/payment.html.twig', [
+            'user' => $user,
+            'wallet' => $userWallet,
+            'company' => $company,
+        ]);
+    }
+
+    /**
      * @Route("/profile/{id}", name="profile")
      * @param Request $request
      * @param UserInterface $user

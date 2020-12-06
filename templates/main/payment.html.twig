@@ -1,0 +1,66 @@
+{% extends 'main/dashboard.html.twig' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block header %}
+    <h1>Payment method</h1>
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{ asset('css/main.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}" type="text/css">
+{% endblock %}
+
+
+{% block main %}
+    <div class="row mt-3 d-flex flex-column align-items-center justify-content-center">
+
+    <div class="row h-75 justify-content-center">
+                <form>
+                    <div class="form-row d-flex justify-content-end mb-4">
+                        <div class="credit-card-icon visa mx-1" id="visa">
+                            
+                        </div>
+                        <div class="credit-card-icon mastercard mx-1" id="mastercard">
+
+                        </div>
+                        <div class="credit-card-icon amex mx-1" id="amex">
+
+                        </div>
+                        <div class="credit-card-icon discover mx-1" id="discover">
+
+                        </div>
+                    </div>
+                    <div class="form-row">    
+                        <div class="form-group col-md-9">
+                            <label for="credit-card-number">Credit card number</label>
+                            <input type="text" class="form-control mb-3" id="credit-card-number" required>
+
+                            <label for="name-on-card">Name on Card</label>
+                            <input type="text" class="form-control mb-3" id="name-on-card" required>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label for="expiration">Expiration</label>
+                            <input type="text" class="form-control mb-3" id="expiration"  placeholder="MM/YY" required>
+    
+                            <label for="cvv">CVV</label>
+                            <input type="text" class="form-control mb-3" id="cvv required">
+                        </div>
+                    </div>
+
+                    <div class="form-row justify-content-center mt-3">
+                        <button type="submit" class="btn btn-success mr-4">Save</button>
+                        <button type="reset" class="btn btn-danger ml-4">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div> 
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('js/payment.js')}}"></script>
+{% endblock %}
