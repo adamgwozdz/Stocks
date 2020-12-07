@@ -48,37 +48,29 @@ class MainController extends AbstractController {
         }
     }
 
-    //User data
-    //$userId = $user->getId();
-    //
-    //$this->getDoctrine()
-    //->getRepository(Users::class)
-    //->findTransactionsById($userId);
-    //
-    //$this->getDoctrine()
-    //->getRepository(Users::class)
-    //->findWalletItemsById($userId);
-    //
-    //$userTransactions = $user->getUserTransactions();
-    //$userWallet = $user->getUserWallets();
-    //Company data
-    //$company = $company->findCompanyHistoryById(1);
-    //$history = $company->getCompanyHistory();
-
     /**
      * @Route("/stock_index", name="stock_index")
      * @param UserInterface $user
-     * @param CompaniesRepository $company
      * @return Response
      */
-    public function stockIndex(UserInterface $user, CompaniesRepository $company) : Response {
+    public function stockIndex(UserInterface $user): Response {
 
-        $em = $this->getDoctrine()->getManager();
-        $company= $em->getRepository(Companies::class)->findAll();
+        $conn = $this->getDoctrine()
+            ->getConnection();
+        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA from
+                (
+                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA,
+                	row_number() over (partition by company_id order by id desc)
+                FROM history h join companies c where c.id = h.company_id
+                ) d group by company_id ";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        $result = $stmt->fetchAll();
 
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
-            'company' => $company,
+            'result' => $result,
         ]);
     }
 
@@ -90,7 +82,7 @@ class MainController extends AbstractController {
      * @param CompaniesRepository $company
      * @return Response
      */
-    public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company) : Response {
+    public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company): Response {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -110,8 +102,8 @@ class MainController extends AbstractController {
 
         $stmt = $em->getConnection()->prepare($procedure);
         $stmt->execute($params);
-        
-        $company= $em->getRepository(Companies::class)->findAll();
+
+        $company = $em->getRepository(Companies::class)->findAll();
 
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
@@ -127,14 +119,14 @@ class MainController extends AbstractController {
      * @param $name
      * @return Response
      */
-    public function actions(UserInterface $user, CompaniesRepository $companiesRepository, HistoryRepository $historyRepository, $name) : Response {
+    public function actions(UserInterface $user, CompaniesRepository $companiesRepository, HistoryRepository $historyRepository, $name): Response {
         $company = $companiesRepository->findOneBy(array('cpnName' => $name));
         $companyId = $company->getId();
 
         $simulationValues = $this->prepareRandomValues($companyId);
         $this->insertHistoryContext($company, $simulationValues);
 
-        $history = $historyRepository->findBy(array('company' => $companyId),array('id'=>'DESC'));
+        $history = $historyRepository->findBy(array('company' => $companyId), array('id' => 'DESC'));
 
         $values = $this->getStockValueArray($companyId);
 
@@ -147,7 +139,7 @@ class MainController extends AbstractController {
     }
 
     public function insertHistoryContext($company, $simulationValues) {
-        if($simulationValues["action"] == 0) {
+        if ($simulationValues["action"] == 0) {
             $this->insertHistory($company, $simulationValues, -1);
         } else {
             $this->insertHistory($company, $simulationValues, 1);
@@ -170,10 +162,10 @@ class MainController extends AbstractController {
         $em = $this->getDoctrine()->getManager();
 
         $repository = $em->getRepository(History::class);
-        $lastValue = $repository->findBy(array('company' => $companyId),array('id'=>'DESC'),1,0);
+        $lastValue = $repository->findBy(array('company' => $companyId), array('id' => 'DESC'), 1, 0);
         $lastValue = $lastValue[0]->getHisValue();
 
-        $stocksVolume = $repository->findBy(array('company' => $companyId),array('id'=>'ASC'),1,0);
+        $stocksVolume = $repository->findBy(array('company' => $companyId), array('id' => 'ASC'), 1, 0);
         $stocksVolume = $stocksVolume[0]->getHisVolume();
 
         return $array = array(
@@ -212,15 +204,17 @@ class MainController extends AbstractController {
     /**
      * @Route("/wallet/{id}", name="wallet")
      * @param UserInterface $user
+     * @param CompaniesRepository $company
+     * @return Response
      */
 
-    public function wallet(UserInterface $user, CompaniesRepository $company)  {
+    public function wallet(UserInterface $user, CompaniesRepository $company) {
         dump($user);
 
         $userWallet = $user->getUserWallets();
 
         $em = $this->getDoctrine()->getManager();
-        $company= $em->getRepository(Companies::class)->findAll();
+        $company = $em->getRepository(Companies::class)->findAll();
 
         return $this->render('main/wallet.html.twig', [
             'user' => $user,
@@ -234,14 +228,14 @@ class MainController extends AbstractController {
      * @param UserInterface $user
      */
 
-    public function paymentMethod(UserInterface $user, CompaniesRepository $company)  {
+    public function paymentMethod(UserInterface $user, CompaniesRepository $company) {
         dump($user);
-        
+
         $userWallet = $user->getUserWallets();
 
         $em = $this->getDoctrine()->getManager();
-        $company= $em->getRepository(Companies::class)->findAll();
-        
+        $company = $em->getRepository(Companies::class)->findAll();
+
 
         return $this->render('main/payment.html.twig', [
             'user' => $user,
@@ -258,7 +252,7 @@ class MainController extends AbstractController {
      * @return RedirectResponse|Response
      */
 
-    public function profile(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id)  {
+    public function profile(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id) {
         dump($user);
 
         $formAccount = $this->createFormBuilder()
@@ -315,17 +309,17 @@ class MainController extends AbstractController {
      * @return RedirectResponse
      */
     public function changeAccountSettings($id, $username, $useFirstName, $useLastName, $useEmail, $usePhone) {
-            $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->getDoctrine()->getManager();
 
-            $user = $entityManager->getRepository(AccountEdit::class)->find($id);
+        $user = $entityManager->getRepository(AccountEdit::class)->find($id);
 
-            $user->setUsername($username);
-            $user->setUseFirstName($useFirstName);
-            $user->setUseLastName($useLastName);
-            $user->setUseEmail($useEmail);
-            $user->setUsePhone($usePhone);
+        $user->setUsername($username);
+        $user->setUseFirstName($useFirstName);
+        $user->setUseLastName($useLastName);
+        $user->setUseEmail($useEmail);
+        $user->setUsePhone($usePhone);
 
-            $entityManager->flush();
+        $entityManager->flush();
 
 
         return $this->redirectToRoute('profile', array('id' => $id));
@@ -338,8 +332,7 @@ class MainController extends AbstractController {
      * @param $id
      * @return Response
      */
-    public function profilePassword(UserInterface $user, $id)
-    {
+    public function profilePassword(UserInterface $user, $id) {
         $formPassword = $this->createFormBuilder()
             ->add('username', HiddenType::class, [
                 'required' => true
@@ -349,7 +342,7 @@ class MainController extends AbstractController {
                 'required' => true,
                 'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password'],
-        ])->getForm();
+            ])->getForm();
 
         return $this->render('main/password.html.twig', [
             'user' => $user,
@@ -375,7 +368,7 @@ class MainController extends AbstractController {
             $data = $formPassword->getData();
 
             return $this->forward('App\Controller\MainController::changePassword', [
-                'id' => $id, 
+                'id' => $id,
                 'password' => $passwordEncoder->encodePassword($user, $data['password'])
             ]);
         }
