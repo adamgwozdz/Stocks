@@ -70,7 +70,7 @@ class MainController extends AbstractController {
 
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
-            'result' => $result,
+            'company' => $result,
         ]);
     }
 
@@ -83,7 +83,7 @@ class MainController extends AbstractController {
      * @return Response
      */
     public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company): Response {
-
+        dump($request);
         $em = $this->getDoctrine()->getManager();
 
         $comp = $request->get('comp');
@@ -113,28 +113,35 @@ class MainController extends AbstractController {
 
     /**
      * @Route("/actions/{name?}", name="actions")
+     * @param Request $request
      * @param UserInterface $user
      * @param CompaniesRepository $companiesRepository
      * @param HistoryRepository $historyRepository
      * @param $name
      * @return Response
      */
-    public function actions(UserInterface $user, CompaniesRepository $companiesRepository, HistoryRepository $historyRepository, $name): Response {
+    public function actions(Request $request, UserInterface $user, CompaniesRepository $companiesRepository, HistoryRepository $historyRepository, $name): Response {
         $company = $companiesRepository->findOneBy(array('cpnName' => $name));
         $companyId = $company->getId();
 
         $simulationValues = $this->prepareRandomValues($companyId);
         $this->insertHistoryContext($company, $simulationValues);
 
-        $history = $historyRepository->findBy(array('company' => $companyId), array('id' => 'DESC'));
+        $conn = $this->getDoctrine()
+            ->getConnection();
+        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD from
+                (
+                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD,
+                	row_number() over (partition by company_id order by id desc)
+                FROM history h join companies c where c.id = h.company_id
+                ) d group by company_id having company_id = " . $companyId;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
 
-        $values = $this->getStockValueArray($companyId);
-
-        dump($history);
         return $this->render('main/actions.html.twig', [
             'user' => $user,
-            'company' => $company,
-            'values' => $history,
+            'company' => $result[0],
         ]);
     }
 

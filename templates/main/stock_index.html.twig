@@ -18,19 +18,19 @@
             </tr>
         </thead>
         <tbody>
-            {% for res in result %}
+            {% for cpn in company %}
             <tr>
                 <td>
-                    <a href="{{ path('actions', {name: res.CPN_NAME}) }}">
-                        {{ res.CPN_NAME }}
+                    <a href="{{ path('actions', {name: cpn.CPN_NAME}) }}">
+                        {{ cpn.CPN_NAME }}
                     </a>
                 </td>
-                <td>{{ res.HIS_VALUE }}</td>
-                <td>{{ res.HIS_VOLUME }}</td>
-                <td>{{ res.CPN_MARKET_AREA }}</td>
+                <td>{{ cpn.HIS_VALUE }}</td>
+                <td>{{ cpn.HIS_VOLUME }}</td>
+                <td>{{ cpn.CPN_MARKET_AREA }}</td>
                 <td>
                     <form action="modifyStocksAmount" method="POST">
-                        <input type="hidden" value={{res.CPN_NAME}} name="comp">
+                        <input type="hidden" value={{cpn.CPN_NAME}} name="comp">
                         <input type="hidden" value={{user.id}} name="user_id">
                         <label for="Buy">Buy</label>
                         <input type="radio" name="action" value="buy" id="Buy">
