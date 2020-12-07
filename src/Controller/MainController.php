@@ -279,7 +279,7 @@ class MainController extends AbstractController {
      * @Route("/changePassword/{id}", name="change_password")
      * Method ({"POST"})
      */
-    public function changePassword(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id) {
+    public function changePassword(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id, $formPassword) {
         $formPassword->handleRequest($request);
         if ($formPassword->isSubmitted()) {
             $data = $formPassword->getData();
