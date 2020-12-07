@@ -9,8 +9,7 @@
 {% block main %}
     <div class="row mt-3">
         <div class="col-md-6 d-flex flex-column">
-            <h2 class="text-center h3">Account</h2>
-            <p class="text-center">
+            <p class="text-center h3 mb-4">
                 Edit you account details here
             </p>
 
@@ -36,7 +35,6 @@
                         </div>
                     </div>
                     
-
                     <div class="my-3 w-100 d-flex justify-content-center">
                         <button type="submit"  class="btn btn-primary mx-3 d-flex align-items-center col-3 justify-content-center">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -46,40 +44,47 @@
                         </button>
                     </div>
                 </div>   
-            {{ form_end(formAccount, {'render_rest': false}) }}
-
-            
+            {{ form_end(formAccount, {'render_rest': false}) }}   
         </div>
-    
 
-        
-
-
-        <div class="col-md-6 d-flex flex-column">
-            <h2 class="text-center h3">Password</h2>
-            <p class="text-center">
-                Change your password here
+        <div class="col-md-6 d-flex flex-column align-items-center">
+            <p class="text-center h3 mb-4">
+                Your account details
             </p>
 
-            {{ form_start(formPassword) }}  
-                <div class="row">
-                    <div class="col-md-8 offset-md-2">
-                        {{ form_row(formPassword.password) }}
-                    </div>
+            <table class="table table-striped table-bordered col-md-8">
+                <tbody>
+                    <tr>
+                        <td>Username</td>
+                        <td class="text-muted">{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <td>First Name</td>
+                        <td class="text-muted">{{ user.useFirstName }}</td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td class="text-muted">{{ user.useLastName }}</td>
+                    </tr>
+                    <tr>
+                        <td>E-Mail</td>
+                        <td class="text-muted">{{ user.useEmail }}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone Number</td>
+                        <td class="text-muted">{{ user.usePhone }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                    <div class="my-3 w-100 d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary mx-3 d-flex align-items-center justify-content-center col-3">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/>
-                                <path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/>
-                            </svg>
-                            Password
-                        </button>
-                    </div>
-                </div>   
-            {{ form_end(formPassword, {'render_rest': false}) }}
-
-            
+            <div class="my-3 w-100 d-flex justify-content-center">
+                <a href="/profilePassword/{{user.id}}" class="btn btn-primary">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/>
+                    <path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/>
+                    </svg>
+                change your password here</a>
+            </div>
         </div>
     </div>
 {% endblock %}
