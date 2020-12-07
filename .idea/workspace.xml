@@ -7,16 +7,21 @@
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0df81cd-f3ab-48a4-ba23-23c826f581e9" name="Default Changelist" comment="Working registration and login">
+    <list default="true" id="d0df81cd-f3ab-48a4-ba23-23c826f581e9" name="Default Changelist" comment="Populated stock index and wallet pages.&#10;When clicking on company name you will be redirected to action page (by company name)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/MainController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/MainController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RegistrationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RegistrationController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Users.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Users.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/dashboard.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/TransactionsRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/TransactionsRepository.php" afterDir="false" />
     </list>
+    <list id="31676899-2a8f-474b-87a8-f0d568538726" name="Delete MainController.php" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,13 +31,30 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
+  <component name="Git.Pull.Settings">
+    <option name="BRANCH" value="master" />
+  </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="Adam" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="Adam" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="PhpServers">
     <servers>
@@ -150,8 +172,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/main/css" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Programowanie\Projekty\Studia\Stocks\templates\main\css" />
+    </key>
   </component>
   <component name="RunManager" selected="PHP Web Page.localhost">
     <configuration name="MainController.php" type="PhpLocalRunConfigurationType" factoryName="PHP Console" temporary="true" path="$PROJECT_DIR$/src/Controller/MainController.php">
@@ -174,6 +201,8 @@
         <item itemvalue="PHP Script.MainController.php" />
         <item itemvalue="PHP Script.MainController.php" />
         <item itemvalue="PHP Script.MainController.php" />
+        <item itemvalue="PHP Script.MainController.php" />
+        <item itemvalue="PHP Script.MainController.php" />
       </list>
     </recent_temporary>
   </component>
@@ -181,12 +210,20 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="d0df81cd-f3ab-48a4-ba23-23c826f581e9" name="Default Changelist" comment="" />
+      <changelist id="31676899-2a8f-474b-87a8-f0d568538726" name="Delete MainController.php" comment="" />
       <created>1604347669152</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1604347669152</updated>
       <workItem from="1604347670280" duration="9736000" />
       <workItem from="1604738942552" duration="13351000" />
+      <workItem from="1604775847081" duration="20000" />
+      <workItem from="1604775873743" duration="732000" />
+      <workItem from="1605187463964" duration="3735000" />
+      <workItem from="1605366286124" duration="12286000" />
+      <workItem from="1605971131598" duration="11997000" />
+      <workItem from="1606314144842" duration="1000" />
+      <workItem from="1606663375233" duration="5849000" />
     </task>
     <task id="LOCAL-00001" summary="Working registration and login">
       <created>1604740662525</created>
@@ -195,7 +232,35 @@
       <option name="project" value="LOCAL" />
       <updated>1604740662525</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fixed redirect after login">
+      <created>1605188306040</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1605188306040</updated>
+    </task>
+    <task id="LOCAL-00003" summary="nothing important">
+      <created>1605370202539</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1605370202539</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added all Entities, created queries for one to many relations and created sample fetching of user data from database in dashboard method">
+      <created>1605378053072</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1605378053072</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Populated stock index and wallet pages.&#10;When clicking on company name you will be redirected to action page (by company name)">
+      <created>1605982994518</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1605982994518</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,7 +271,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -215,7 +292,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Working registration and login" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working registration and login" />
+    <MESSAGE value="Fixed redirect after login" />
+    <MESSAGE value="nothing important" />
+    <MESSAGE value="Added all Entities, created queries for one to many relations and created sample fetching of user data from database in dashboard method" />
+    <MESSAGE value="Populated stock index and wallet pages.&#10;When clicking on company name you will be redirected to action page (by company name)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Populated stock index and wallet pages.&#10;When clicking on company name you will be redirected to action page (by company name)" />
   </component>
   <component name="WindowStateProjectService">
     <state x="714" y="344" key="#Notifications" timestamp="1604353063070">
@@ -226,37 +307,105 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="540" y="225" key="#Servers/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604349869219" />
-    <state x="414" y="175" width="1092" height="790" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604349876401">
+    <state x="414" y="175" width="1092" height="790" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605372599637">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="175" width="1092" height="790" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604349876401" />
+    <state x="414" y="175" width="1092" height="790" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605372599637" />
     <state x="597" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1604764709256">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="597" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604764709256" />
+    <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1605188140992">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605188140992" />
+    <state x="180" y="86" key="DiffContextDialog" timestamp="1605370766359">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="180" y="86" key="DiffContextDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605370766359" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1605974189373">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605974189373" />
     <state x="838" y="418" key="Github.ShareDialog" timestamp="1604740598550">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="838" y="418" key="Github.ShareDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604740598550" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1604351053541">
+    <state width="1877" height="2" key="GridCell.Tab.0.bottom" timestamp="1605378580847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604351053541" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1604351053541">
+    <state width="1877" height="2" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.0.center" timestamp="1605378580847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604351053541" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1604351053541">
+    <state width="1877" height="2" key="GridCell.Tab.0.center/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.0.left" timestamp="1605378580847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604351053541" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1604351053541">
+    <state width="1877" height="2" key="GridCell.Tab.0.left/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.0.right" timestamp="1605378580847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604351053541" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604740677158">
+    <state width="1877" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.1.bottom" timestamp="1605378580847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604740677158" />
+    <state width="1877" height="2" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.1.center" timestamp="1605378580847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="2" key="GridCell.Tab.1.center/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.1.left" timestamp="1605378580847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="2" key="GridCell.Tab.1.left/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.1.right" timestamp="1605378580847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="2" key="GridCell.Tab.1.right/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.2.bottom" timestamp="1605378580847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="2" key="GridCell.Tab.2.bottom/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.2.center" timestamp="1605378580847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="2" key="GridCell.Tab.2.center/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.2.left" timestamp="1605378580847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="2" key="GridCell.Tab.2.left/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state width="1877" height="2" key="GridCell.Tab.2.right" timestamp="1605378580847">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="2" key="GridCell.Tab.2.right/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605378580847" />
+    <state x="201" y="112" key="MergeDialog" timestamp="1605979415141">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="201" y="112" key="MergeDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605979415141" />
+    <state x="807" y="433" key="VCS.ChangelistChooser" timestamp="1604776383782">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="807" y="433" key="VCS.ChangelistChooser/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1604776383782" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1605983008894">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605983008894" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1605983070439">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605983070439" />
+    <state x="740" y="233" key="git4idea.branch.GitSmartOperationDialog" timestamp="1605979130865">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="233" key="git4idea.branch.GitSmartOperationDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605979130865" />
+    <state x="677" y="291" key="refactoring.ChangeSignatureDialog" timestamp="1605979648260">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="677" y="291" key="refactoring.ChangeSignatureDialog/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605979648260" />
+    <state x="616" y="240" key="run.anything.popup" timestamp="1605973988425">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/1920.54.1280.984@0.0.1920.1040" timestamp="1605973988425" />
   </component>
 </project>
