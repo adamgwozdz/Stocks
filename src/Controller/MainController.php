@@ -297,28 +297,22 @@ class MainController extends AbstractController {
             ]);
         }
 
-        $formPassword = $this->createFormBuilder()
-        ->add('password', RepeatedType::class, [
-            'type' => PasswordType::class,
-            'required' => true,
-            'first_options' => ['label' => 'Password'],
-            'second_options' => ['label' => 'Confirm Password'],
-        ])->getForm();
-
-        $formPassword->handleRequest($request);
-        if ($formPassword->isSubmitted()) {
-            $data = $formPassword->getData();
-
-            return $this->forward('App\Controller\MainController::changePassword', [
-                'id' => $id,
-                'password' => encodePassword($data['password'])
-            ]);
-        }
+        return $this->render('main/profile.html.twig', [
+            'user' => $user,
+            'formAccount' => $formAccount->CreateView()
+        ]);
     }
 
     /**
      * @Route("/edit_account/{id}/{username}/{useFirstName}/{useLastName}/{useEmail}", name="edit_account")
      * Method ({"POST"})
+     * @param $id
+     * @param $username
+     * @param $useFirstName
+     * @param $useLastName
+     * @param $useEmail
+     * @param $usePhone
+     * @return RedirectResponse
      */
     public function changeAccountSettings($id, $username, $useFirstName, $useLastName, $useEmail, $usePhone) {
             $entityManager = $this->getDoctrine()->getManager();
@@ -340,6 +334,9 @@ class MainController extends AbstractController {
     /**
      * @Route("/profilePassword/{id}", name="profile_password")
      * Method ({"GET"})
+     * @param UserInterface $user
+     * @param $id
+     * @return Response
      */
     public function profilePassword(UserInterface $user, $id)
     {
@@ -364,8 +361,15 @@ class MainController extends AbstractController {
     /**
      * @Route("/changePassword/{id}", name="change_password")
      * Method ({"POST"})
+     * @param Request $request
+     * @param UserInterface $user
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param $id
+     * @param $formPassword
+     * @param $password
+     * @return RedirectResponse|Response
      */
-    public function changePassword(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id) {
+    public function changePassword(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id, $formPassword, $password) {
         $formPassword->handleRequest($request);
         if ($formPassword->isSubmitted()) {
             $data = $formPassword->getData();
