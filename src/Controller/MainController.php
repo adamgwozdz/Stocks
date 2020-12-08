@@ -51,26 +51,28 @@ class MainController extends AbstractController {
     /**
      * @Route("/stock_index", name="stock_index")
      * @param UserInterface $user
+     * @param CompaniesRepository $companiesRepository
      * @return Response
      */
-    public function stockIndex(UserInterface $user): Response {
-
-        $conn = $this->getDoctrine()
-            ->getConnection();
-        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA from
-                (
-                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA,
-                	row_number() over (partition by company_id order by id desc)
-                FROM history h join companies c where c.id = h.company_id
-                ) d group by company_id ";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        $result = $stmt->fetchAll();
+    public function stockIndex(UserInterface $user, CompaniesRepository $companiesRepository): Response {
+        $company = $companiesRepository->findAll();
+//        $conn = $this->getDoctrine()
+//            ->getConnection();
+//        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA from
+//                (
+//                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA,
+//                	row_number() over (partition by company_id order by id desc)
+//                FROM history h join companies c where c.id = h.company_id
+//                ) d group by company_id ";
+//        $stmt = $conn->prepare($sql);
+//        $stmt->execute();
+//
+//        $result = $stmt->fetchAll();
 
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
-            'company' => $result,
+            'company' => $company,
+            'alert' => " "
         ]);
     }
 
@@ -82,23 +84,35 @@ class MainController extends AbstractController {
      * @param CompaniesRepository $company
      * @return Response
      */
-    public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company): Response {
-        dump($request);
+    public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company) : Response {
         $em = $this->getDoctrine()->getManager();
 
-        $comp = $request->get('comp');
         $action = $request->get('action');
+        $comp_id = $request->get('comp_id');
         $amount = $request->get('amount');
         $id = $request->get('user_id');
 
-        if ($action == 'sell') {
-            $amount = $amount * -1;
+        if ($action == 'buy' && $amount != null) {
+            $procedure = "CALL stockBuy(:user_id, :company_id, :amount)";
+            $params['user_id'] = $id;
+            $params['company_id'] = $comp_id;
+            $params['amount'] = $amount;
         }
+        else if ($action == 'sell' && $amount != null){
+            $procedure = "CALL stockSell(:user_id, :company_id, :amount)";
+            $params['user_id'] = $id;
+            $params['company_id'] = $comp_id;
+            $params['amount'] = $amount;
+        }
+        else {
+            $company= $em->getRepository(Companies::class)->findAll();
 
-        $procedure = "CALL changeAmount(:user_id, :company, :amount)";
-        $params['user_id'] = $id;
-        $params['company'] = $comp;
-        $params['amount'] = $amount;
+            return $this->render('main/stock_index.html.twig', [
+                'user' => $user,
+                'company' => $company,
+                'alert' => "Actions were not filled correctly!",
+            ]);
+        }
 
         $stmt = $em->getConnection()->prepare($procedure);
         $stmt->execute($params);
@@ -108,6 +122,7 @@ class MainController extends AbstractController {
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
             'company' => $company,
+            'alert' =>  " ",
         ]);
     }
 
@@ -127,21 +142,21 @@ class MainController extends AbstractController {
         $simulationValues = $this->prepareRandomValues($companyId);
         $this->insertHistoryContext($company, $simulationValues);
 
-        $conn = $this->getDoctrine()
-            ->getConnection();
-        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD from
-                (
-                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD,
-                	row_number() over (partition by company_id order by id desc)
-                FROM history h join companies c where c.id = h.company_id
-                ) d group by company_id having company_id = " . $companyId;
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
+//        $conn = $this->getDoctrine()
+//            ->getConnection();
+//        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD from
+//                (
+//                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD,
+//                	row_number() over (partition by company_id order by id desc)
+//                FROM history h join companies c where c.id = h.company_id
+//                ) d group by company_id having company_id = " . $companyId;
+//        $stmt = $conn->prepare($sql);
+//        $stmt->execute();
+//        $result = $stmt->fetchAll();
 
         return $this->render('main/actions.html.twig', [
             'user' => $user,
-            'company' => $result[0],
+            'company' => $company,
         ]);
     }
 
@@ -174,6 +189,8 @@ class MainController extends AbstractController {
 
         $stocksVolume = $repository->findBy(array('company' => $companyId), array('id' => 'ASC'), 1, 0);
         $stocksVolume = $stocksVolume[0]->getHisVolume();
+
+
 
         return $array = array(
             "action" => $this->randomAction(),

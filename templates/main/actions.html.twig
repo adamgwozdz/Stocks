@@ -6,8 +6,11 @@
     <h1>Company information</h1>
 {% endblock %}
 
+{% block javascripts %}
+{% endblock %}
+
 {% block main %}
-    <p class="h3 mb-4">Business details for {{ company.CPN_NAME }}</p>
+    <p class="h3 mb-4">Business details for {{ company.cpnName }}</p>
 
     <table class="table table-striped table-bordered col-md-12">
             <thead>
@@ -22,19 +25,19 @@
             <tbody>
                 <tr>
                     <td class="text-muted">    
-                        {{ company.CPN_COUNTRY }}
+                        {{ company.cpnCountry }}
                     </td>
                     <td class="text-muted">
-                        {{ company.HIS_VOLUME }}
+                        {{ company.cpnVolume }}
                     </td>
                     <td class="text-muted">
-                        {{ company.CPN_MARKET_AREA }}
+                        {{ company.cpnMarketArea }}
                     </td>
                     <td class="text-muted">
-                        {{ company.CPN_CD|date('Y-m-d') }}
+                        {{ company.cpnCD|date('Y-m-d') }}
                     </td>
                     <td class="text-muted">
-                        {{ company.HIS_VALUE }}
+                        {{ company.cpnValue }}
                     </td>
                 </tr>
             </tbody>
