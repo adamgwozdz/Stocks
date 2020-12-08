@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Companies;
+use App\Entity\History;
 use App\Entity\Transactions;
 use App\Entity\Users;
 use App\Entity\Wallet;
 use App\Entity\AccountEdit;
 use App\Entity\PasswordEdit;
 use App\Repository\CompaniesRepository;
+use App\Repository\HistoryRepository;
 use App\Repository\UsersRepository;
 use Container3199tEd\getUserMoneyRepositoryService;
 use Container3199tEd\getUsersRepositoryService;
@@ -46,38 +48,29 @@ class MainController extends AbstractController {
         }
     }
 
-    //User data
-    //$userId = $user->getId();
-    //
-    //$this->getDoctrine()
-    //->getRepository(Users::class)
-    //->findTransactionsById($userId);
-    //
-    //$this->getDoctrine()
-    //->getRepository(Users::class)
-    //->findWalletItemsById($userId);
-    //
-    //$userTransactions = $user->getUserTransactions();
-    //$userWallet = $user->getUserWallets();
-    //Company data
-    //$company = $company->findCompanyHistoryById(1);
-    //$history = $company->getCompanyHistory();
-
     /**
      * @Route("/stock_index", name="stock_index")
      * @param UserInterface $user
-     * @param CompaniesRepository $company
      * @return Response
      */
-    public function stockIndex(UserInterface $user, CompaniesRepository $company) : Response {
+    public function stockIndex(UserInterface $user): Response {
 
-        $em = $this->getDoctrine()->getManager();
-        $company= $em->getRepository(Companies::class)->findAll();
+        $conn = $this->getDoctrine()
+            ->getConnection();
+        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA from
+                (
+                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA,
+                	row_number() over (partition by company_id order by id desc)
+                FROM history h join companies c where c.id = h.company_id
+                ) d group by company_id ";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
 
-        dump($company);
+        $result = $stmt->fetchAll();
+
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
-            'company' => $company,
+            'company' => $result,
         ]);
     }
 
@@ -89,8 +82,8 @@ class MainController extends AbstractController {
      * @param CompaniesRepository $company
      * @return Response
      */
-    public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company) : Response {
-
+    public function modifyStocksAmount(Request $request, UserInterface $user, CompaniesRepository $company): Response {
+        dump($request);
         $em = $this->getDoctrine()->getManager();
 
         $comp = $request->get('comp');
@@ -109,8 +102,8 @@ class MainController extends AbstractController {
 
         $stmt = $em->getConnection()->prepare($procedure);
         $stmt->execute($params);
-        
-        $company= $em->getRepository(Companies::class)->findAll();
+
+        $company = $em->getRepository(Companies::class)->findAll();
 
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
@@ -120,32 +113,115 @@ class MainController extends AbstractController {
 
     /**
      * @Route("/actions/{name?}", name="actions")
+     * @param Request $request
      * @param UserInterface $user
      * @param CompaniesRepository $companiesRepository
+     * @param HistoryRepository $historyRepository
      * @param $name
      * @return Response
      */
-    public function actions(UserInterface $user, CompaniesRepository $companiesRepository, $name) : Response {
+    public function actions(Request $request, UserInterface $user, CompaniesRepository $companiesRepository, HistoryRepository $historyRepository, $name): Response {
         $company = $companiesRepository->findOneBy(array('cpnName' => $name));
+        $companyId = $company->getId();
+
+        $simulationValues = $this->prepareRandomValues($companyId);
+        $this->insertHistoryContext($company, $simulationValues);
+
+        $conn = $this->getDoctrine()
+            ->getConnection();
+        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD from
+                (
+                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD,
+                	row_number() over (partition by company_id order by id desc)
+                FROM history h join companies c where c.id = h.company_id
+                ) d group by company_id having company_id = " . $companyId;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
 
         return $this->render('main/actions.html.twig', [
             'user' => $user,
-            'company' => $company,
+            'company' => $result[0],
         ]);
+    }
+
+    public function insertHistoryContext($company, $simulationValues) {
+        if ($simulationValues["action"] == 0) {
+            $this->insertHistory($company, $simulationValues, -1);
+        } else {
+            $this->insertHistory($company, $simulationValues, 1);
+        }
+    }
+
+    public function insertHistory($company, $simulationValues, $action) {
+        $history = new History();
+        $history->setHisValue($simulationValues["lastValue"] + $simulationValues["value"] * $action);
+        $history->setHisVolume($simulationValues["stocksVolume"] + $simulationValues["volume"]);
+        $history->setHisDate(\DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d H:i:s")));
+        $history->setCompany($company);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($history);
+        $em->flush();
+    }
+
+
+    public function prepareRandomValues($companyId) {
+        $em = $this->getDoctrine()->getManager();
+
+        $repository = $em->getRepository(History::class);
+        $lastValue = $repository->findBy(array('company' => $companyId), array('id' => 'DESC'), 1, 0);
+        $lastValue = $lastValue[0]->getHisValue();
+
+        $stocksVolume = $repository->findBy(array('company' => $companyId), array('id' => 'ASC'), 1, 0);
+        $stocksVolume = $stocksVolume[0]->getHisVolume();
+
+        return $array = array(
+            "action" => $this->randomAction(),
+            "value" => $this->randomValue($lastValue),
+            "volume" => $this->randomVolume($stocksVolume),
+            "lastValue" => $lastValue,
+            "stocksVolume" => $stocksVolume,
+        );
+    }
+
+    public function randomValue($lastValue) {
+        $maxChange = $lastValue / 100;
+        return rand(0, $maxChange * 100) / 100;
+    }
+
+    public function randomVolume($stocksVolume) {
+        $maxStocks = $stocksVolume / 5;
+        return (int)(rand(1 * 100, $maxStocks * 100) / 100);
+    }
+
+    public function randomAction() {
+        return rand(0, 1);
+    }
+
+    public function getStockValueArray($companyId) {
+        $conn = $this->getDoctrine()
+            ->getConnection();
+        $sql = 'SELECT * FROM history WHERE company_id = ' . $companyId;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 
     /**
      * @Route("/wallet/{id}", name="wallet")
      * @param UserInterface $user
+     * @param CompaniesRepository $company
+     * @return Response
      */
 
-    public function wallet(UserInterface $user, CompaniesRepository $company)  {
+    public function wallet(UserInterface $user, CompaniesRepository $company) {
         dump($user);
 
         $userWallet = $user->getUserWallets();
 
         $em = $this->getDoctrine()->getManager();
-        $company= $em->getRepository(Companies::class)->findAll();
+        $company = $em->getRepository(Companies::class)->findAll();
 
         return $this->render('main/wallet.html.twig', [
             'user' => $user,
@@ -159,14 +235,14 @@ class MainController extends AbstractController {
      * @param UserInterface $user
      */
 
-    public function paymentMethod(UserInterface $user, CompaniesRepository $company)  {
+    public function paymentMethod(UserInterface $user, CompaniesRepository $company) {
         dump($user);
-        
+
         $userWallet = $user->getUserWallets();
 
         $em = $this->getDoctrine()->getManager();
-        $company= $em->getRepository(Companies::class)->findAll();
-        
+        $company = $em->getRepository(Companies::class)->findAll();
+
 
         return $this->render('main/payment.html.twig', [
             'user' => $user,
@@ -183,7 +259,7 @@ class MainController extends AbstractController {
      * @return RedirectResponse|Response
      */
 
-    public function profile(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id)  {
+    public function profile(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id) {
         dump($user);
 
         $formAccount = $this->createFormBuilder()
@@ -213,7 +289,7 @@ class MainController extends AbstractController {
             $data = $formAccount->getData();
 
             return $this->forward('App\Controller\MainController::changeAccountSettings', [
-                'id' => $id, 
+                'id' => $id,
                 'username' => $data['username'],
                 'useFirstName' => $data['useFirstName'],
                 'useLastName' => $data['useLastName'],
@@ -222,30 +298,35 @@ class MainController extends AbstractController {
             ]);
         }
 
-        
-
         return $this->render('main/profile.html.twig', [
             'user' => $user,
             'formAccount' => $formAccount->CreateView()
         ]);
-    } 
+    }
 
     /**
      * @Route("/edit_account/{id}/{username}/{useFirstName}/{useLastName}/{useEmail}", name="edit_account")
      * Method ({"POST"})
+     * @param $id
+     * @param $username
+     * @param $useFirstName
+     * @param $useLastName
+     * @param $useEmail
+     * @param $usePhone
+     * @return RedirectResponse
      */
     public function changeAccountSettings($id, $username, $useFirstName, $useLastName, $useEmail, $usePhone) {
-            $entityManager = $this->getDoctrine()->getManager();
-        
-            $user = $entityManager->getRepository(AccountEdit::class)->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
 
-            $user->setUsername($username);
-            $user->setUseFirstName($useFirstName);
-            $user->setUseLastName($useLastName);
-            $user->setUseEmail($useEmail);
-            $user->setUsePhone($usePhone);
+        $user = $entityManager->getRepository(AccountEdit::class)->find($id);
 
-            $entityManager->flush();
+        $user->setUsername($username);
+        $user->setUseFirstName($useFirstName);
+        $user->setUseLastName($useLastName);
+        $user->setUseEmail($useEmail);
+        $user->setUsePhone($usePhone);
+
+        $entityManager->flush();
 
 
         return $this->redirectToRoute('profile', array('id' => $id));
@@ -254,9 +335,11 @@ class MainController extends AbstractController {
     /**
      * @Route("/profilePassword/{id}", name="profile_password")
      * Method ({"GET"})
+     * @param UserInterface $user
+     * @param $id
+     * @return Response
      */
-    public function profilePassword(UserInterface $user, $id)
-    {
+    public function profilePassword(UserInterface $user, $id) {
         $formPassword = $this->createFormBuilder()
             ->add('username', HiddenType::class, [
                 'required' => true
@@ -266,7 +349,7 @@ class MainController extends AbstractController {
                 'required' => true,
                 'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password'],
-        ])->getForm();
+            ])->getForm();
 
         return $this->render('main/password.html.twig', [
             'user' => $user,
@@ -278,14 +361,21 @@ class MainController extends AbstractController {
     /**
      * @Route("/changePassword/{id}", name="change_password")
      * Method ({"POST"})
+     * @param Request $request
+     * @param UserInterface $user
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param $id
+     * @param $formPassword
+     * @param $password
+     * @return RedirectResponse|Response
      */
-    public function changePassword(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id, $formPassword) {
+    public function changePassword(Request $request, UserInterface $user, UserPasswordEncoderInterface $passwordEncoder, $id, $formPassword, $password) {
         $formPassword->handleRequest($request);
         if ($formPassword->isSubmitted()) {
             $data = $formPassword->getData();
 
             return $this->forward('App\Controller\MainController::changePassword', [
-                'id' => $id, 
+                'id' => $id,
                 'password' => $passwordEncoder->encodePassword($user, $data['password'])
             ]);
         }
