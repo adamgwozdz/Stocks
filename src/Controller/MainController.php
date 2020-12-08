@@ -56,18 +56,6 @@ class MainController extends AbstractController {
      */
     public function stockIndex(UserInterface $user, CompaniesRepository $companiesRepository): Response {
         $company = $companiesRepository->findAll();
-//        $conn = $this->getDoctrine()
-//            ->getConnection();
-//        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA from
-//                (
-//                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA,
-//                	row_number() over (partition by company_id order by id desc)
-//                FROM history h join companies c where c.id = h.company_id
-//                ) d group by company_id ";
-//        $stmt = $conn->prepare($sql);
-//        $stmt->execute();
-//
-//        $result = $stmt->fetchAll();
 
         return $this->render('main/stock_index.html.twig', [
             'user' => $user,
@@ -138,21 +126,17 @@ class MainController extends AbstractController {
     public function actions(Request $request, UserInterface $user, CompaniesRepository $companiesRepository, HistoryRepository $historyRepository, $name): Response {
         $company = $companiesRepository->findOneBy(array('cpnName' => $name));
         $companyId = $company->getId();
+        $em = $this->getDoctrine()->getManager();
 
         $simulationValues = $this->prepareRandomValues($companyId);
-        $this->insertHistoryContext($company, $simulationValues);
+        $procedure = "CALL updateCompany(:company_id, :value, :volume, :action )";
+        $params['company_id'] = $companyId;
+        $params['value'] = $simulationValues['value'];
+        $params['volume'] = $simulationValues['volume'];
+        $params['action'] = $simulationValues['action'];
 
-//        $conn = $this->getDoctrine()
-//            ->getConnection();
-//        $sql = "select id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD from
-//                (
-//                SELECT h.id, company_id, HIS_VALUE, HIS_VOLUME, CPN_NAME, CPN_MARKET_AREA, CPN_COUNTRY, CPN_CD,
-//                	row_number() over (partition by company_id order by id desc)
-//                FROM history h join companies c where c.id = h.company_id
-//                ) d group by company_id having company_id = " . $companyId;
-//        $stmt = $conn->prepare($sql);
-//        $stmt->execute();
-//        $result = $stmt->fetchAll();
+        $stmt = $em->getConnection()->prepare($procedure);
+        $stmt->execute($params);
 
         return $this->render('main/actions.html.twig', [
             'user' => $user,
@@ -190,14 +174,10 @@ class MainController extends AbstractController {
         $stocksVolume = $repository->findBy(array('company' => $companyId), array('id' => 'ASC'), 1, 0);
         $stocksVolume = $stocksVolume[0]->getHisVolume();
 
-
-
         return $array = array(
             "action" => $this->randomAction(),
             "value" => $this->randomValue($lastValue),
             "volume" => $this->randomVolume($stocksVolume),
-            "lastValue" => $lastValue,
-            "stocksVolume" => $stocksVolume,
         );
     }
 
