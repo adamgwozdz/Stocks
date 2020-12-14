@@ -81,14 +81,14 @@ class MainController extends AbstractController {
         $id = $request->get('user_id');
 
         if ($action == 'buy' && $amount != null) {
-            $procedure = "CALL stockBuy(:user_id, :company_id, :amount)";
-            $params['user_id'] = $id;
+            $procedure = "CALL stockBuy(:userid, :company_id, :amount)";
+            $params['userid'] = $id;
             $params['company_id'] = $comp_id;
             $params['amount'] = $amount;
         }
         else if ($action == 'sell' && $amount != null){
-            $procedure = "CALL stockSell(:user_id, :company_id, :amount)";
-            $params['user_id'] = $id;
+            $procedure = "CALL stockSell(:userid, :company_id, :amount)";
+            $params['userid'] = $id;
             $params['company_id'] = $comp_id;
             $params['amount'] = $amount;
         }
