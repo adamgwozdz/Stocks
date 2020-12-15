@@ -63,6 +63,38 @@ class MainController extends AbstractController {
             'alert' => " "
         ]);
     }
+    
+    // ========== Sprzedaż wszystkich akcji spółki i usunięcie jej z portfela ========== //
+
+    /**
+     * @Route("/wallet/deleteStock", name="deleteStock")
+     * Method ({"POST"})
+     * @param UserInterface $user
+     * @param Request $request
+     * @return Response
+     */
+    public function deleteStock(UserInterface $user, Request $request) : Response {
+        $em = $this->getDoctrine()->getManager();
+        $comp_id = $request->get('comp_id');
+        $user_id = $request->get('user_id');
+
+        $procedure = "CALL sellAllStocks(:userid, :companyid);";
+        $params['userid'] = $user_id;
+        $params['companyid'] = $comp_id;
+        $stmt = $em->getConnection()->prepare($procedure);
+        $stmt->execute($params);
+
+        $userWallet = $user->getUserWallets();
+        $company = $em->getRepository(Companies::class)->findAll();
+
+        return $this->render('main/wallet.html.twig', [
+            'user' => $user,
+            'wallet' => $userWallet,
+            'company' => $company,
+        ]);
+    }
+
+    // ================================================================================== //
 
     /**
      * @Route("/modifyStocksAmount", name="modifyStocksAmount")
